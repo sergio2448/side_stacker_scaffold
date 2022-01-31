@@ -1,2 +1,35 @@
 # side_stacker_project
 Sidestacker Project Implementation
+
+
+## Limitations and Assumptions
+
+### Column Size Problem
+
+There's a problem in games with an odd number of columns, if I click in the middle column, would it count for the left side
+or the right side? (NR or NL where N is the row number). The way I chose to fix this "problem" is by always chosing the right side,
+in essence, this doesn't affect anything, let's take a look at this example to illustrate it:
+
+Let's say I have this row in a game:
+
+X X _  _  _ _ 0
+0 1 2 (3) 4 5 6
+
+In this case, of course, 3 is the middle column, if I am the player that's playing next, and there's only one spot left in the
+left side and I want to play it, I can just go directly and click there, if it were already played it would go to the right and that
+would be also not a problem, it also applies in opposite case, I can just select the free spots.
+
+X _ _  _  _ X 0
+0 1 2 (3) 4 5 6
+
+By deciding an arbitrary side, I'm translating this problem into just a visual "anomality".
+
+Another solution could be to restrict the game to only be played with even number of columns, but that would just be avoiding the problem
+
+That's why I'm sticking with the "arbitrary side" solution
+
+### Weird CSS input problem
+
+Since the divs that contain the circles in my interface have the click event, you can register clicks outside of the actual circle
+I didn't solve that problem to not waste time in things that don't add much value, also when you click randomly I get weird positions
+sometimes, I didn't spend time debugging it.

@@ -1,0 +1,38 @@
+name: Python Linting
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout repo
+      - uses: actions/checkout@v2
+      # take only changed files
+      - id: files
+        uses: jitterbit/get-changed-files@v1
+        continue-on-error: true
+      # filter out non-python files
+      - id: python_files
+        run: |
+          RESULT=()
+          for n in ${{ steps.files.outputs.added_modified }}; do
+            if [[ "$n" =~ \.py$ ]]; then
+              RESULT+=("$n");
+            fi
+          done
+          echo "::set-output name=python_files::$RESULT"
+      # run black/isort by now
+      - uses: ricardochaves/python-lint@v1.3.0
+        if: steps.python_files.outputs.python_files != ''
+        with:
+          python-root-list: ${{ steps.python_files.outputs.python_files }}
+          use-pylint: false
+          use-pycodestyle: false
+          use-flake8: false
+          use-black: true
+          use-mypy: false
+          use-isort: true
+          extra-black-options: "--diff --line-length 120"
