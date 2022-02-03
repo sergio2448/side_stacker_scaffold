@@ -1,5 +1,14 @@
-PLAYER1 = "red"
-PLAYER2 = "yellow"
+from typing import List, Tuple
+
+from src.side_stacker.constants import (
+    ALL_POSSIBLE_WINNING_COMBINATIONS,
+    GAME_COLUMNS,
+    GAME_ROWS,
+    PLAYER1,
+    PLAYER2,
+)
+from src.side_stacker.repository import GameRepository
+from src.side_stacker.types import Position
 
 
 class GameController:
@@ -8,54 +17,92 @@ class GameController:
 
     Play moves with :meth:`play`.
 
-    Get past moves with :attr:`moves`.
-
     Check for a victory with :attr:`winner`.
 
     """
 
-    def __init__(self):
-        self.moves = []
-        self.top = [0 for _ in range(7)]
+    def __init__(self, repository: GameRepository):
+        self.turn = 0
+        self.repo = repository
         self.winner = None
 
     @property
-    def last_player(self):
+    def player_in_turn(self):
         """
         Player who played the last move.
-
         """
-        return PLAYER1 if len(self.moves) % 2 else PLAYER2
+        return PLAYER2 if self.turn % 2 else PLAYER1
 
-    @property
-    def last_player_won(self):
+    def check_winner(self, player: int, position: Position):
         """
-        Whether the last move is winning.
-
+        Whether the current move is winning. Check all possible winning combinations for the last move
         """
-        b = sum(1 << (8 * column + row) for _, column, row in self.moves[::-2])
-        return any(b & b >> v & b >> 2 * v & b >> 3 * v for v in [1, 7, 8, 9])
 
-    def play(self, player, column):
+        for combination in ALL_POSSIBLE_WINNING_COMBINATIONS:
+            if self.check_winning_combination(player, position, combination):
+                return True
+
+        return False
+
+    def check_winning_combination(self, player: int, position: Position, combination: List[Tuple]):
+        for position_delta in combination:
+            position_to_check = Position.generate_adjacent_position(position, position_delta)
+
+            # If the combination is outside of the board then it's not a winning move
+            if position_to_check.row >= GAME_ROWS or position_to_check.column >= GAME_COLUMNS:
+                return False
+
+            if self.repo.get_player_in_position(position_to_check) != player:
+                return False
+
+        return True
+
+    def cast_movement_to_position(self, movement: str) -> Position:
         """
-        Play a move in a column.
-
-        Returns the row where the checker lands.
-
-        Raises :exc:`RuntimeError` if the move is illegal.
-
+        Gets a movement in the format "NS" where N is a row and S is a side 'L': left, 'R': right and converts it to a
+        position in the game board, validating first if the movement is valid
         """
-        if player == self.last_player:
+        try:
+            row, side = movement
+        except (TypeError, ValueError):
+            raise RuntimeError(f"Invalid movement {movement}")
+
+        assert side in ["L", "R"], "Movement should be '#L' or '#R' where # is a row and L=left, R=right"
+        assert (
+            row.isdigit() and int(row) >= 0 and int(row) < GAME_ROWS
+        ), f"Row must be a numeric value between 0 and {GAME_ROWS - 1}"
+
+        row = int(row)
+        row_slots = self.repo.get_row(row)
+        # Validate the row has free slots
+        has_free_slots = any([pos == 0 for pos in row_slots])
+
+        if not has_free_slots:
+            raise RuntimeError(f"The row {row} is full.")
+
+        # Get the side-st position
+        if side == "R":
+            reversed_column = row_slots[::-1].index(0)
+            column = (GAME_COLUMNS - 1) - reversed_column
+        else:
+            column = row_slots.index(0)
+
+        return Position(row, column)
+
+    def play(self, player: int, movement: str):
+        """
+        Play a movement in the board, returns the position where the checker lands
+
+        Raises :exc:`RuntimeError` if it's not player's turn.
+        """
+        position = self.cast_movement_to_position(movement)
+
+        if player != self.player_in_turn:
             raise RuntimeError("It isn't your turn.")
 
-        row = self.top[column]
-        if row == 6:
-            raise RuntimeError("This slot is full.")
+        self.repo.set_player_in_position(position, player)
 
-        self.moves.append((player, column, row))
-        self.top[column] += 1
+        if self.winner is None and self.check_winner(player, position):
+            self.winner = player
 
-        if self.winner is None and self.last_player_won:
-            self.winner = self.last_player
-
-        return row
+        self.turn += 1

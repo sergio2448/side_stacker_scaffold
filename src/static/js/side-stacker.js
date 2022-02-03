@@ -1,5 +1,9 @@
-const PLAYER1 = "red";
-const PLAYER2 = "yellow";
+const PLAYER1 = 1;
+const PLAYER2 = 2;
+const PLAYER_COLORS = {
+    [PLAYER1]: "red",
+    [PLAYER2]: "yellow"
+}
 const BOARD_ROWS = 7;
 const BOARD_COLUMNS = 7;
 
@@ -42,7 +46,7 @@ function playMove(board, player, move) {
         throw new RangeError(`column must be between 0 and ${COLUMN_ROWS}.`);
     }
     // Place checker in cell.
-    if (!cellElement.classList.replace("empty", player)) {
+    if (!cellElement.classList.replace("empty", PLAYER_COLORS[player])) {
         throw new Error("cell must be empty.");
     }
 }
@@ -59,7 +63,7 @@ function sendMoves(board, websocket) {
         }
         const event = {
             type: "play",
-            row: row + side,
+            movement: row + side,
         };
         websocket.send(JSON.stringify(event));
     });
@@ -75,7 +79,7 @@ function receiveMoves(board, websocket) {
         switch (event.type) {
             case "play":
                 // Update the UI with the move.
-                playMove(board, event.player, event.move);
+                playMove(board, event.player, event.movement);
                 break;
             case "win":
                 showMessage(`Player ${event.player} wins!`);

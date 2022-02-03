@@ -22,11 +22,13 @@ would be also not a problem, it also applies in opposite case, I can just select
 X _ _  _  _ X 0
 0 1 2 (3) 4 5 6
 
-By deciding an arbitrary side, I'm translating this problem into just a visual "anomality".
+By deciding an arbitrary side, I'm translating this problem into just a UX Problem, which also is an important thing to consider.
 
-Another solution could be to restrict the game to only be played with even number of columns, but that would just be avoiding the problem
+Another solution could be to restrict the game to only be played with even number of columns, but that would just be avoiding the problem.
 
-That's why I'm sticking with the "arbitrary side" solution
+And perhaps another solution could be to add left and right arrows to each row as inputs to let the user manually decide which side to put the checker on, but that would create a UI problem because that's Ugly :P
+
+For simplicity, I'm sticking with the UX problem but just wanted to mention it here.
 
 ### Weird CSS input problem
 
