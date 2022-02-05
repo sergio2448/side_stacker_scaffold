@@ -1,28 +1,42 @@
 /* General layout */
 
 body {
-    background-color: white;
-    display: flex;
-    flex-direction: row-reverse;
+    background-image: url("../img/table.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    display: grid;
+    grid-auto-rows: min-content;
     justify-content: center;
     align-items: center;
     margin: 0;
     min-height: 100vh;
-  }
+}
+
+h1 {
+    color: white;
+    stroke-color: black;
+    font-size: 4rem;
+    font-family: "Impact";
+    stroke-width: 2px;
+    text-align: center;
+    margin: 10px;
+}
 
   /* Action buttons */
 
-  .actions {
+.actions {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: flex-end;
-    width: 720px;
-    height: 100px;
-  }
+    width: 520px;
+    height: 60px;
+    margin: 10px;
+}
 
-  .action {
-    color: darkgray;
+.action {
+    color: rgb(19, 71, 37);
     font-family: "Helvetica Neue", sans-serif;
     font-size: 20px;
     line-height: 20px;
@@ -31,71 +45,72 @@ body {
     text-decoration: none;
     text-transform: uppercase;
     padding: 20px;
-    width: 120px;
-  }
+}
 
-  .action:hover {
-    background-color: darkgray;
+.action:hover {
+    background-color: rgb(19, 71, 37);
     color: white;
     font-weight: 700;
-  }
+}
 
-  .action[href=""] {
+.action[href=""] {
     display: none;
-  }
+}
 
-  /* Connect Four board */
+/* Connect Four board */
 
-  .board {
+.board {
     background-color: rgb(10, 177, 113);
     display: flex;
     flex-direction: column;
     padding: 0 10px;
-    position: relative;
-  }
+    border-color: black;
+    border-style: solid;
+    border-width: 10px 10px 10px 10px;
+}
 
-  .board::before,
-  .board::after {
+.board::before,
+.board::after {
     background-color: rgb(10, 177, 113);
     content: "";
-    height: 720px;
+    height: 530px;
     width: 20px;
     position: absolute;
-  }
+}
 
-  .board::before {
+.board::before {
     left: -20px;
-  }
+}
 
-  .board::after {
+.board::after {
     right: -20px;
-  }
+}
 
-  .row {
+.row {
     display: flex;
     flex-direction: row;
     padding: 10px;
-  }
+}
 
-  .cell {
+.cell {
     border-radius: 50%;
-    width: 80px;
-    height: 80px;
+    width: 50px;
+    height: 50px;
     margin: 0 10px;
-  }
+}
 
-  .empty {
+.empty {
     background-color: white;
-  }
+}
 
-  .empty:hover {
+.empty:hover {
     background-color: lightgray;
-  }
+}
 
-  .red {
+.red {
     background-color: red;
-  }
+}
 
-  .yellow {
+.yellow {
     background-color: yellow;
-  }
+}
