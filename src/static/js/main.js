@@ -1,4 +1,4 @@
-import { createBoard, playMove, sendMoves, receiveMoves } from "./side-stacker.js";
+import { createBoard, sendMoves, receiveMoves, initGame } from "./side-stacker.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   // Initialize the UI.
@@ -6,7 +6,8 @@ window.addEventListener("DOMContentLoaded", () => {
   createBoard(board);
 
   // Open the WebSocket connection and register event handlers.
-  const websocket = new WebSocket("ws://localhost:8001/");
+  const websocket = new WebSocket(`ws://${document.domain}:${location.port}/game`);
+  initGame(websocket);
   receiveMoves(board, websocket);
   sendMoves(board, websocket);
 });

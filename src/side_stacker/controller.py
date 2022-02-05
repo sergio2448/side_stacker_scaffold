@@ -22,7 +22,7 @@ class GameController:
     """
 
     def __init__(self, repository: GameRepository):
-        self.turn = 0
+        self.moves = []
         self.repo = repository
         self.winner = None
 
@@ -31,7 +31,7 @@ class GameController:
         """
         Player who played the last move.
         """
-        return PLAYER2 if self.turn % 2 else PLAYER1
+        return PLAYER2 if len(self.moves) % 2 else PLAYER1
 
     def check_winner(self, player: int, position: Position):
         """
@@ -105,4 +105,4 @@ class GameController:
         if self.winner is None and self.check_winner(player, position):
             self.winner = player
 
-        self.turn += 1
+        self.moves.append((player, movement))
