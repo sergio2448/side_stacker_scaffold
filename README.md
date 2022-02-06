@@ -14,6 +14,12 @@ The project is mounted with Docker and thus, to install it you should just use b
 
 ## Limitations and Assumptions
 
+## No Testing of Websockets
+
+Unfortunately, I realized too late that the library I chose to build this project, had almost no documentation, and by
+looking at their source code and googling, I couldn't make anything work, so I didn't test the webhooks in the handler
+of this project, perhaps this is something we can try together in the pairing session? :D
+
 ### Column Size Problem
 
 There's a problem in games with an odd number of columns, if I click in the middle column, would it count for the left side
