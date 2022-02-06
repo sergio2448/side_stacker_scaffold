@@ -5,28 +5,24 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile
-    container_name: shiphero_app
+    container_name: side_stacker_app
     environment:
-      - FLASK_APP=app
-      - FLASK_DEBUG=1
+      - PYTHONPATH=/app:$PYTHONPATH
       - PYTHONUNBUFFERED=0
       - ENV
-      - PYTHONDONTWRITEBYTECODE=1
-      - DEBUGGER
-      - DEBUGGER_PORT
       - MONGODB_HOST=0.0.0.0
       - MONGODB_USER=root
       - MONGODB_PASS=toor
-      - MONGODB_DB=shiphero
+      - MONGODB_DB=sidestacker
     volumes:
       - ./:/app
     ports:
-      - "8080:8080"
+      - 8080:8080
     networks:
-      shiphero:
+      side_stacker_network:
         aliases:
-          - shiphero-app
-    command: python3 run.py --host=0.0.0.0 --port=8080
+          - side-stacker-network
+    command: python3 src/side_stacker/sanic_app.py
     depends_on:
       - mongo
   mongo:
@@ -37,20 +33,20 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: toor
-      MONGO_INITDB_DATABASE: shiphero
+      MONGO_INITDB_DATABASE: sidestacker
     volumes:
-      - shiphero-data:/data/db
+      - side-stacker-data:/data/db
     networks:
-      shiphero:
+      side_stacker_network:
         aliases:
-          - shiphero-mongo
+          - side-stacker-mongo
 
 networks:
-  shiphero:
+  side_stacker_network:
     driver: "bridge"
 
 volumes:
-  shiphero-data:
+  side-stacker-data:
     driver_opts:
       type: tmpfs
       device: tmpfs

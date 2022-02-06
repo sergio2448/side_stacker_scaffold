@@ -2,6 +2,16 @@
 Sidestacker Project Implementation
 
 
+## How to install and run tests
+The project is mounted with Docker and thus, to install it you should just use basic docker-compose commands.
+
+1. Clone this repository
+3. Build the container: `docker-compose build`
+4. Run it: `docker-compose up -d`
+5. Run the tests (The container must be running): `docker-compose exec app pytest -sv`
+6. You can run `docker-compose exec app bash` to have a shell inside the container.
+7. Example to run a single test:  `docker-compose exec app pytest -sv tests/test_controller.py::test_player_in_turn`
+
 ## Limitations and Assumptions
 
 ### Column Size Problem
@@ -34,4 +44,4 @@ For simplicity, I'm sticking with the UX problem but just wanted to mention it h
 
 Since the divs that contain the circles in my interface have the click event, you can register clicks outside of the actual circle
 I didn't solve that problem to not waste time in things that don't add much value, also when you click randomly I get weird positions
-sometimes, I didn't spend time debugging it.
+sometimes, I didn't spend time debugging it though.
