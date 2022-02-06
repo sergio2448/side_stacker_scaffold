@@ -22,15 +22,19 @@ in essence, this doesn't affect anything, let's take a look at this example to i
 
 Let's say I have this row in a game:
 
+```
 X X _  _  _ _ 0
 0 1 2 (3) 4 5 6
+```
 
 In this case, of course, 3 is the middle column, if I am the player that's playing next, and there's only one spot left in the
 left side and I want to play it, I can just go directly and click there, if it were already played it would go to the right and that
 would be also not a problem, it also applies in opposite case, I can just select the free spots.
 
+```
 X _ _  _  _ X 0
 0 1 2 (3) 4 5 6
+```
 
 By deciding an arbitrary side, I'm translating this problem into just a UX Problem, which also is an important thing to consider.
 
