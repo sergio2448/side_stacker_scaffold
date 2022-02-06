@@ -2,13 +2,11 @@ from typing import List, Tuple
 
 from src.side_stacker.constants import (
     ALL_POSSIBLE_WINNING_COMBINATIONS,
+    EMPTY_CHARACTER,
     GAME_COLUMNS,
     GAME_ROWS,
-    PLAYER1,
-    PLAYER2,
 )
-from src.side_stacker.repository import GameRepository
-from src.side_stacker.types import Position
+from src.side_stacker.entities import Position
 
 
 class GameController:
@@ -21,19 +19,37 @@ class GameController:
 
     """
 
-    def __init__(self, repository: GameRepository):
-        self.moves = []
-        self.repo = repository
-        self.winner = None
+    def __init__(
+        self,
+        key: str = None,
+        board: List[List] = None,
+        moves: List[Tuple] = None,
+        players: List[str] = None,
+        winner: str = None,
+    ):
+        self.game_key = key
+        self.moves = moves or []
+        self.board = board or [[EMPTY_CHARACTER] * GAME_COLUMNS for _ in range(GAME_ROWS)]
+        self.players = players or []
+        self.winner = winner
 
     @property
     def player_in_turn(self):
-        """
-        Player who played the last move.
-        """
-        return PLAYER2 if len(self.moves) % 2 else PLAYER1
+        return self.players[len(self.moves) % 2]
 
-    def check_winner(self, player: int, position: Position):
+    def get_player_in_position(self, position: Position):
+        return self.board[position.row][position.column]
+
+    def set_player_in_position(self, position: Position, player: str):
+        self.board[position.row][position.column] = player
+
+    def get_row(self, row: int):
+        return self.board[row][0:GAME_COLUMNS]
+
+    def add_player(self, player: str):
+        self.players.append(player)
+
+    def check_winner(self, player: str, position: Position):
         """
         Whether the current move is winning. Check all possible winning combinations for the last move
         """
@@ -44,7 +60,7 @@ class GameController:
 
         return False
 
-    def check_winning_combination(self, player: int, position: Position, combination: List[Tuple]):
+    def check_winning_combination(self, player: str, position: Position, combination: List[Tuple]):
         for position_delta in combination:
             position_to_check = Position.generate_adjacent_position(position, position_delta)
 
@@ -52,7 +68,7 @@ class GameController:
             if position_to_check.row >= GAME_ROWS or position_to_check.column >= GAME_COLUMNS:
                 return False
 
-            if self.repo.get_player_in_position(position_to_check) != player:
+            if self.get_player_in_position(position_to_check) != player:
                 return False
 
         return True
@@ -73,23 +89,23 @@ class GameController:
         ), f"Row must be a numeric value between 0 and {GAME_ROWS - 1}"
 
         row = int(row)
-        row_slots = self.repo.get_row(row)
+        row_slots = self.get_row(row)
         # Validate the row has free slots
-        has_free_slots = any([pos == 0 for pos in row_slots])
+        has_free_slots = any([pos == EMPTY_CHARACTER for pos in row_slots])
 
         if not has_free_slots:
             raise RuntimeError(f"The row {row} is full.")
 
         # Get the side-st position
         if side == "R":
-            reversed_column = row_slots[::-1].index(0)
+            reversed_column = row_slots[::-1].index(EMPTY_CHARACTER)
             column = (GAME_COLUMNS - 1) - reversed_column
         else:
-            column = row_slots.index(0)
+            column = row_slots.index(EMPTY_CHARACTER)
 
         return Position(row, column)
 
-    def play(self, player: int, movement: str):
+    def play(self, player: str, movement: str):
         """
         Play a movement in the board, returns the position where the checker lands
 
@@ -100,9 +116,10 @@ class GameController:
         if player != self.player_in_turn:
             raise RuntimeError("It isn't your turn.")
 
-        self.repo.set_player_in_position(position, player)
+        self.set_player_in_position(position, player)
 
         if self.winner is None and self.check_winner(player, position):
             self.winner = player
 
-        self.moves.append((player, movement))
+        move = (player, movement)
+        self.moves.append(move)

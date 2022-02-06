@@ -1,9 +1,3 @@
-const PLAYER1 = 1;
-const PLAYER2 = 2;
-const PLAYER_COLORS = {
-    [PLAYER1]: "red",
-    [PLAYER2]: "yellow"
-}
 const BOARD_ROWS = 7;
 const BOARD_COLUMNS = 7;
 
@@ -26,14 +20,10 @@ function createBoard(board) {
     }
 }
 
-function playMove(board, player, move) {
+function playMove(board, playerColor, move) {
     const row = parseInt(move[0], 10)
     const side = move[1]
 
-    // Check values of arguments.
-    if (player !== PLAYER1 && player !== PLAYER2) {
-        throw new Error(`player must be ${PLAYER1} or ${PLAYER2}.`);
-    }
     const rowElement = board.querySelectorAll(".row")[row];
     if (rowElement === undefined) {
         throw new RangeError(`row must be between 0 and ${BOARD_ROWS}.`);
@@ -46,7 +36,7 @@ function playMove(board, player, move) {
         throw new RangeError(`column must be between 0 and ${COLUMN_ROWS}.`);
     }
     // Place checker in cell.
-    if (!cellElement.classList.replace("empty", PLAYER_COLORS[player])) {
+    if (!cellElement.classList.replace("empty", playerColor)) {
         throw new Error("cell must be empty.");
     }
 }
@@ -63,6 +53,7 @@ function sendMoves(board, websocket) {
         }
         const event = {
             type: "play",
+            username: window.location.pathname.split("/")[3],
             movement: row + side,
         };
         websocket.send(JSON.stringify(event));
@@ -77,13 +68,9 @@ function receiveMoves(board, websocket) {
     websocket.addEventListener("message", ({ data }) => {
         const event = JSON.parse(data);
         switch (event.type) {
-            case "init":
-                // Create link for inviting the second player.
-                document.querySelector(".join").href = "?join=" + event.join;
-                break;
             case "play":
                 // Update the UI with the move.
-                playMove(board, event.player, event.movement);
+                playMove(board, event.player_color, event.movement);
                 break;
             case "win":
                 showMessage(`Player ${event.player} wins!`);
@@ -99,20 +86,15 @@ function receiveMoves(board, websocket) {
     });
 }
 
-function initGame(websocket) {
+function joinGame(websocket) {
     websocket.addEventListener("open", () => {
-        // Send an "init" event according to who is connecting.
-        const params = new URLSearchParams(window.location.search);
-        let event = { type: "init" };
-
-        if (params.has("join")) {
-            // Second player joins an existing game.
-            event = {type: "join", join_key: params.get("join")};
-        } else {
-            // First player starts a new game.
-        }
+        // Send a "join" event according to who is connecting.
+        const pathArray = window.location.pathname.split("/");
+        const gameKey = pathArray[2]
+        const username = pathArray[3]
+        const event = {type: "join", game_key: gameKey, username: username};
         websocket.send(JSON.stringify(event));
     });
 }
 
-export { PLAYER1, PLAYER2, createBoard, sendMoves, receiveMoves, initGame };
+export { createBoard, sendMoves, receiveMoves, joinGame };

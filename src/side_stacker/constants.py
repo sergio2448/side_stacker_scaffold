@@ -1,6 +1,3 @@
-PLAYER1 = 1
-PLAYER2 = 2
-
 # Each element in each list is a position-delta (row, column) in the board that should be taken by the player so a move
 # can be considered a winning move.
 # negative values are variances to the left and up and positive to the right and down depending on the axis.
