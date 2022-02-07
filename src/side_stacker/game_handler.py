@@ -54,6 +54,7 @@ class GameHandler:
             }
             for connection in connections:
                 await connection.send(json.dumps(event))
+                await connection.close(1000, "OK")
 
             del self.CONNECTIONS[controller.game_key]
 
@@ -61,14 +62,17 @@ class GameHandler:
         game = self.game_repo.find(game_key)
         if game is None:
             await self.send_error(websocket, "Game not found")
+            await websocket.close(1000, "OK")
             return
 
         if game["winner"] is not None:
             await self.send_error(websocket, "This game has ended")
+            await websocket.close(1000, "OK")
             return
 
         if len(game["players"]) == 2 and player not in game["players"]:
             await self.send_error(websocket, "This game is full")
+            await websocket.close(1000, "OK")
             return
 
         try:
