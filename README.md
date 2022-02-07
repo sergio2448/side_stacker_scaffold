@@ -1,8 +1,9 @@
-# side_stacker_project
-Sidestacker Project Implementation
+# 🎮 Side Stacker Game 🎮
+<img width="800" alt="image" src="https://user-images.githubusercontent.com/7388681/152719498-4752c388-4ad0-404b-b655-f4e141b7801b.png">
 
+This is my take at the Side Stacker game for Monadical
 
-## How to install and run tests
+## 🗒️ How to install and run tests
 The project is mounted with Docker and thus, to install it you should just use basic docker-compose commands.
 
 1. Clone this repository
@@ -11,10 +12,47 @@ The project is mounted with Docker and thus, to install it you should just use b
 5. Run the tests (The container must be running): `docker-compose exec app pytest -sv`
 6. You can run `docker-compose exec app bash` to have a shell inside the container.
 7. Example to run a single test:  `docker-compose exec app pytest -sv tests/test_controller.py::test_player_in_turn`
+8. Then to play it you just have to go to `0.0.0.0:8080` in your browser (Requires the container running)
 
-## Limitations and Assumptions
+## ✔️ Game Features
+* Two players can play a game in different browsers, they just need an `username`, one of them will create a game and share the `game key` with the other one, then they'll join using this and their own `username`
+* It validates the player in turn is the only one that can play
+* The browser can be reloaded and no data will be lost and the game can still be played
+* It validates no more than 2 players can join a game
+* It doesn't let players continue playing after the game has ended
 
-## No Testing of Websockets
+## 🧑‍💻 Tech Stack
+* Language (Python 3.8)
+* Backend Framework (Sanic and Websockets): I decided to go for a lighter framework than Django Channels to implement websockets because I don't like the unnecessary overhead that Django adds to a small app like this one, this is a fast async framework that implements the websockets library so I just have to start one server.
+* Database (MongoDB/Pymongo): I wanted to use something really simple that don't require to run any migrations or tables creation, so I went for MongoDB that let's you iterate some ideas quickly without the rigid structure of a relational database.
+* Frontend (HTML/CSS/ Plain Javascript)
+* Docker: So you can easily run it on any machine without much effort to install it
+* Testing (Pytest)
+
+## 💹 Data Model
+I'm basically just using a single collection in Mongo to store the information for a game, it's described as follows:
+* `key (str)`: This is the identifier of the game, which is also the key shared between players to join a game, it's a 16 length string generated with `secrets.token_urlsafe(12)`
+* `board (list[list])`: This stores the game status, it's a multidimensional list, each position has the `username` of a player or `_` which represents that the cell is empty
+* `players (list)`: List of strings that have the players playing the game, this can't be longer than 2.
+* `moves (list[tuple])`: The list of movements the game has seen, it's an append-only list that's used to rebuild the game when the page is refreshed and to validate turns
+* `winner (str)`: It contains the username of the player that wons the game or `None` if there hasn't been a winner
+
+## 🏅The Winning Algorithm
+I had different options to implement the algorithm that checks if there has been a winner of a match, my design philosophy was to create something that was efficient but still readable and easily understandable, these were my options:
+
+1. Translating the board into bitboards and solve everything with bytes operators as described in the [The Fhourstones Benchmark](https://tromp.github.io/c4/fhour.html) (for Connect4 Game)
+2. Using the board as a matrix and doing a convolution operation in the two axis using Numpy as described in this [StackOverflow Answer](https://stackoverflow.com/a/63991845/17245552)
+3. Doing an optimized iterative algorithm that only checks the possible winning combinations for the last played position, which are 16 (horizontal + vertical + right diagonal + left diagonal)
+
+**This was my mindset to decide which algorithm to go for:**
+1. This is the most efficient one, however, the problem with this is that it has an entry barrier, which is understanding bitboards and bytes operators, which maybe not every programmer that could read this code will understand (including me 😅) so, this has readability problems
+2. This solution would be great, but it would require using an external tool like Numpy, and also understanding convolution operations, so, although this is elegant, I didn't go for it because I wanted something simpler
+3. This is the one I ended up implementing, because it's fast enough since it just doesn't go to brute-force all possible combinations in the board but does a local search around the last position, and also the code is simple enough that anyone can follow it
+
+
+## ⚠️ Limitations and Assumptions
+
+### No Testing of Websockets
 
 Unfortunately, I realized too late that the library I chose to build this project, had almost no documentation, and by
 looking at their source code and googling, I couldn't make anything work, so I didn't test the webhooks in the handler
