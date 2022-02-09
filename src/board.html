@@ -6,7 +6,24 @@
   </head>
   <body>
     <h1 id="main-title">Side Stacker</h1>
-    <div class="board"></div>
+    <h2 class="join-text">Join Key: <span class="join-key"></span> <button class="copy-clipboard">Copy to clipboard</button></h2>
+    <div class="game-container">
+        <div class="board"></div>
+        <div class="moves-container">
+            <div class="move-form">
+                <form class="join-game">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Movement, ex: 2R" name="movement" id="movement">
+                    </div>
+                    <button type="submit" id="movement-submit">Send</button>
+                </form>
+            </div>
+            <div class="moves-section">
+                <h3>Game Moves</h3>
+                <div class="moves-list"></div>
+            </div>
+        </div>
+    </div>
     <script src="/static/js/main.js" type="module"></script>
   </body>
 </html>

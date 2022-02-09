@@ -18,11 +18,47 @@ function createBoard(board) {
         }
         board.append(rowElement);
     }
+
+    // Paint Join Key
+    const joinText = document.querySelector(".join-text");
+    const joinKey = joinText.children[0];
+    joinKey.textContent = window.location.pathname.split("/")[2];
+    joinText.style.display = "block";
+
+    // Add events to clipboard button
+    const copyButton = document.querySelector(".copy-clipboard");
+    copyButton.addEventListener("click", copyToClipboard);
 }
 
-function playMove(board, playerColor, move) {
-    const row = parseInt(move[0], 10)
-    const side = move[1]
+function copyToClipboard({ target }) {
+    const joinKey = document.querySelector(".join-key").textContent;
+
+    // Taken from: https://stackoverflow.com/a/65996386
+    if (navigator.clipboard && window.isSecureContext) {
+        // navigator clipboard api method'
+        return navigator.clipboard.writeText(joinKey);
+    } else {
+        // text area method
+        let textArea = document.createElement("textarea");
+        textArea.value = joinKey;
+        // make the textarea out of viewport
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        return new Promise((res, rej) => {
+            // here the magic happens
+            document.execCommand('copy') ? res() : rej();
+            textArea.remove();
+        });
+    }
+}
+
+function playMove(board, playerColor, player, move) {
+    const row = parseInt(move[0], 10);
+    const side = move[1];
 
     const rowElement = board.querySelectorAll(".row")[row];
     if (rowElement === undefined) {
@@ -39,29 +75,47 @@ function playMove(board, playerColor, move) {
     if (!cellElement.classList.replace("empty", playerColor)) {
         throw new Error("cell must be empty.");
     }
+
+    // Add movement to player list
+    document.querySelector(".moves-list").innerHTML += `<span class="move"> → (${player}, "${move}")</span>`;
 }
 
-function sendMoves(board, websocket) {
-    // When clicking a column, send a "play" event for a move in that column.
-    board.addEventListener("click", ({ target }) => {
-        const row = target.dataset.row;
-        const side = target.className.includes("right") ? "R" : "L"
+function sendMoves(moveForm, websocket) {
+    moveForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const moveInput = document.querySelector("#movement");
+        const movement = moveInput.value;
 
-        // Ignore clicks outside a row.
-        if (row === undefined) {
+        if (!movement) {
+            showMessage("The movement can't be empty");
             return;
         }
-        const event = {
+
+        if (movement.length > 2 || isNaN(movement[0]) || movement[0].match(/[a-z]/i)) {
+            showMessage("Movement has an unexpected format");
+            return;
+        }
+
+        const websocketEvent = {
             type: "play",
             username: window.location.pathname.split("/")[3],
-            movement: row + side,
+            movement: movement,
         };
-        websocket.send(JSON.stringify(event));
-    });
-  }
+        websocket.send(JSON.stringify(websocketEvent));
+    })
+}
 
-function showMessage(message) {
-    window.setTimeout(() => window.alert(message), 50);
+function showMessage(message, redirect = false) {
+    let messageWithRedirect = redirect ?  message + " Redirecting..." : message
+    window.setTimeout(
+        () => {
+            window.alert(messageWithRedirect);
+            if (redirect) {
+                window.location.href = `${location.protocol}//${document.domain}:${location.port}/`;
+            }
+        },
+        50
+    );
 }
 
 function receiveMoves(board, websocket) {
@@ -70,10 +124,10 @@ function receiveMoves(board, websocket) {
         switch (event.type) {
             case "play":
                 // Update the UI with the move.
-                playMove(board, event.player_color, event.movement);
+                playMove(board, event.player_color, event.player, event.movement);
                 break;
             case "win":
-                showMessage(`Player ${event.player} wins!`);
+                showMessage(`Player ${event.player} wins!`, true);
                 // No further messages are expected; close the WebSocket connection.
                 websocket.close(1000);
                 break;

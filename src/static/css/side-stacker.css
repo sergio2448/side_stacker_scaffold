@@ -22,6 +22,26 @@ h1 {
     margin: 10px;
 }
 
+.join-text {
+    text-align: center;
+    font-family: "Impact";
+    display: none;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.join-text .join-key {
+    color: blue;
+}
+
+.copy-clipboard {
+    background-color: rgb(19, 71, 37);
+    color: white;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 5px;
+}
+
   /* Action buttons */
 
 .actions {
@@ -130,9 +150,6 @@ h1 {
     background-color: white;
 }
 
-.empty:hover {
-    background-color: lightgray;
-}
 
 .red {
     background-color: red;
@@ -140,4 +157,22 @@ h1 {
 
 .yellow {
     background-color: yellow;
+}
+
+.game-container {
+    display: flex;
+}
+
+.moves-container {
+    margin-left: 20px;
+}
+
+h3 {
+    font-family: "Impact";
+}
+
+.move {
+    display: block;
+    color: darkblue;
+    font-family: sans-serif;
 }
