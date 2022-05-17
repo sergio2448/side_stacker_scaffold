@@ -9,9 +9,9 @@ The project is mounted with Docker and thus, to install it you should just use b
 1. Clone this repository
 3. Build the container: `docker-compose build`
 4. Run it: `docker-compose up -d`
-5. Run the tests (The container must be running): `docker-compose exec app pytest -sv`
+5. Run the tests (The container must be running): `docker-compose exec -w /app/backend/src app pytest -sv`
 6. You can run `docker-compose exec app bash` to have a shell inside the container.
-7. Example to run a single test:  `docker-compose exec app pytest -sv tests/test_controller.py::test_player_in_turn`
+7. Example to run a single test:  `docker-compose exec  -w /app/backend/src app pytest -sv tests/test_controller.py::test_player_in_turn`
 8. Then to play it you just have to go to `0.0.0.0:8080` in your browser (Requires the container running)
 
 ## ✔️ Game Features

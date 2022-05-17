@@ -1,8 +1,8 @@
 from sanic.response import file, redirect
 
-from src.side_stacker.game_handler import GameHandler
-from src.side_stacker.repositories import GameRepository
-from src.side_stacker.utils import get_path_to_html
+from game_handler import GameHandler
+from repositories import GameRepository
+from utils import get_path_to_html
 
 
 async def index(request):
