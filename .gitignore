@@ -1,3 +1,7 @@
+# Pipenv is ignored as the scaffold is very basic. Unignore if you want to use it.
+Pipfile
+Pipfile.lock
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

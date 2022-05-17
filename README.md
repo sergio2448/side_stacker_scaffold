@@ -22,7 +22,7 @@ The project is mounted with Docker and thus, to install it you should just use b
 * It doesn't let players continue playing after the game has ended
 
 ## 🧑‍💻 Tech Stack
-* Language (Python 3.8)
+* Language (Python 3.9)
 * Backend Framework (Sanic and Websockets): I decided to go for a lighter framework than Django Channels to implement websockets because I don't like the unnecessary overhead that Django adds to a small app like this one, this is a fast async framework that implements the websockets library so I just have to start one server.
 * Database (MongoDB/Pymongo): I wanted to use something really simple that don't require to run any migrations or tables creation, so I went for MongoDB that let's you iterate some ideas quickly without the rigid structure of a relational database.
 * Frontend (HTML/CSS/ Plain Javascript)
