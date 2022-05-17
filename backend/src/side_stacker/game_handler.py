@@ -1,7 +1,7 @@
 import json
 
-from controller import GameController
-from repositories import GameRepository
+from src.side_stacker.controller import GameController
+from src.side_stacker.repositories import GameRepository
 
 
 class GameHandler:

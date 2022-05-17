@@ -1,7 +1,7 @@
 /* General layout */
 
 body {
-    background-image: url("../../../../frontend/public/img/table.jpg");
+    background-image: url("../public/img/table.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -22,7 +22,7 @@ h1 {
     margin: 10px;
 }
 
-  /* Action buttons */
+/* Action buttons */
 
 .actions {
     display: flex;

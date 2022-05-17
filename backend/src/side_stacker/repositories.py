@@ -2,8 +2,8 @@ import abc
 import secrets
 from typing import Optional
 
-from constants import EMPTY_CHARACTER, GAME_COLUMNS, GAME_ROWS
-from mongo import database
+from src.side_stacker.constants import EMPTY_CHARACTER, GAME_COLUMNS, GAME_ROWS
+from src.side_stacker.mongo import database
 
 
 class AbstractRepository(abc.ABC):

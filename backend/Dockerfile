@@ -1,7 +1,7 @@
 FROM python:3.9
 
 COPY . /app
-WORKDIR /app/backend
+WORKDIR /app
 
 RUN pip3 install -r requirements.txt --no-cache-dir
 RUN pip3 install -r requirements_test.txt --no-cache-dir

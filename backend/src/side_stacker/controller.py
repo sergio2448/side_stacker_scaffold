@@ -1,12 +1,12 @@
 from typing import List, Tuple
 
-from constants import (
+from src.side_stacker.constants import (
     ALL_POSSIBLE_WINNING_COMBINATIONS,
     EMPTY_CHARACTER,
     GAME_COLUMNS,
     GAME_ROWS,
 )
-from entities import Position
+from src.side_stacker.entities import Position
 
 
 class GameController:

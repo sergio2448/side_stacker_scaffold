@@ -1,8 +1,8 @@
-from sanic.response import file, redirect
+from sanic.response import file, json
 
-from game_handler import GameHandler
-from repositories import GameRepository
-from utils import get_path_to_html
+from src.side_stacker.game_handler import GameHandler
+from src.side_stacker.repositories import GameRepository
+from src.side_stacker.utils import get_path_to_html
 
 
 async def index(request):
@@ -10,16 +10,11 @@ async def index(request):
 
 
 async def create_game(request):
-    username = request.form.get("username")
+    username = request.form["username"][0]  # required
     game_repository = GameRepository()
     game_key = game_repository.create(username)
     game_repository.commit()
-    return redirect(f"/play/{game_key}/{username}")
-
-
-async def play(request, game_key, username):
-    return await file(get_path_to_html("board.html"))
-
+    return json({"game_key": game_key})
 
 async def game(request, websocket):
     game_handler = GameHandler()

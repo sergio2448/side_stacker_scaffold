@@ -1,11 +1,9 @@
 import os
 
 import pytest
-from sanic import Sanic
 
 from src.side_stacker.controller import GameController
 from src.side_stacker.repositories import GameRepository
-from src.side_stacker.views import play
 
 os.environ["MONGODB_HOST"] = os.environ.get("MONGODB_HOST", "0.0.0.0")
 os.environ["MONGODB_PORT"] = "27017"

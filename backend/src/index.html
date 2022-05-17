@@ -5,23 +5,7 @@
     <link href="static/css/side-stacker.css" rel="stylesheet">
   </head>
   <body>
-    <h1 id="main-title">Side Stacker</h1>
-    <div class="home-actions">
-        <form class="join-game" action="/create-game" method="POST">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Username" name="username">
-                <button type="submit" class="start-game">Start New Game</button>
-            </div>
-        </form>
-        <p>-- or --</p>
-        <form class="join-game" onsubmit="return redirectToGame()">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Username" name="username" id="username">
-                <input type="text" class="form-control" placeholder="Game ID" name="game_key" id="game-key">
-            </div>
-            <button type="submit">Join Game!</button>
-        </form>
-    </div>
+
   </body>
   <script>
       function redirectToGame() {
