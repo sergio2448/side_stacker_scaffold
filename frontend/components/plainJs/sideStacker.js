@@ -18,6 +18,10 @@ function createBoard(board) {
     }
     board.append(rowElement);
   }
+
+  return () => {
+    board.width += 0; // hack!
+  }
 }
 
 function playMove(board, playerColor, move) {
@@ -42,8 +46,7 @@ function playMove(board, playerColor, move) {
 }
 
 function sendMoves(board, websocket, playerName) {
-  // When clicking a column, send a "play" event for a move in that column.
-  board.addEventListener("click", ({ target }) => {
+  const listener = ({ target }) => {
     const row = target.dataset.row;
     const side = target.className.includes("right") ? "R" : "L"
 
@@ -57,7 +60,12 @@ function sendMoves(board, websocket, playerName) {
       movement: row + side,
     };
     websocket.send(JSON.stringify(event));
-  });
+  };
+  // When clicking a column, send a "play" event for a move in that column.
+  board.addEventListener("click", listener);
+  return () => {
+    board.removeEventListener("click", listener);
+  }
 }
 
 function showMessage(message) {
@@ -65,7 +73,7 @@ function showMessage(message) {
 }
 
 function receiveMoves(board, websocket) {
-  websocket.addEventListener("message", ({ data }) => {
+  const listener = ({ data }) => {
     const event = JSON.parse(data);
     switch (event.type) {
       case "play":
@@ -83,14 +91,18 @@ function receiveMoves(board, websocket) {
       default:
         throw new Error(`Unsupported event type: ${event.type}.`);
     }
-  });
+  };
+  websocket.addEventListener("message", listener);
+  return () => websocket.removeEventListener("message", listener);
 }
 
 function joinGame(websocket, gameId, playerName) {
-  websocket.addEventListener("open", () => {
+  const listener = () => {
     const event = {type: "join", game_key: gameId, username: playerName};
     websocket.send(JSON.stringify(event));
-  });
+  };
+  websocket.addEventListener("open", listener);
+  return () => websocket.removeEventListener("open", listener);
 }
 
 export { createBoard, sendMoves, receiveMoves, joinGame };

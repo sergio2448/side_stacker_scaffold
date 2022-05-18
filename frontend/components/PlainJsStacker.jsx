@@ -5,7 +5,7 @@ export const PlainJsStacker = ({gameId, playerName}) => {
   const [boardElement, setBoardElement] = useState();
   useEffect(() => {
     if (!boardElement) return;
-    initPlainUi(boardElement, gameId, playerName);
+    return initPlainUi(boardElement, gameId, playerName);
   }, [boardElement]);
   return (
     <div className="board" ref={setBoardElement}>

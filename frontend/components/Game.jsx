@@ -1,8 +1,9 @@
-import {useParams} from "react-router-dom";
-import {PlainJsStacker} from "./PlainJsStacker";
+import { useRouter } from "next/router";
+import { PlainJsStacker } from "./PlainJsStacker";
 
 export const Game = () => {
-  const { gameId, playerName } = useParams();
+  const router = useRouter()
+  const { gameId, playerName } = router.query
   if (!gameId) {
     return <div>No game id</div>;
   }

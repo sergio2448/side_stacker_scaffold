@@ -25,6 +25,10 @@ The project is mounted with Docker and thus, to install it you should just use b
 7. Example to run a single test:  `docker-compose exec backend pytest -sv src/tests/test_controller.py::test_player_in_turn`
 8. Then to play it you just have to go to `0.0.0.0:3000` in your browser (Requires the container running)
 
+## Adding frontend packages when running with Docker
+After you've installed a frontend package i.e. by adding it to `package.json` or with `yarn add <packagename>`,
+make sure it's updated in docker by running `docker-compose exec --workdir=/app frontend yarn install`
+
 ## Migrations note
 
 Backend uses migrations to set up a database. It is run by docker automatically.

@@ -96,8 +96,8 @@ h1 {
     border-width: 10px 10px 10px 10px;
 }
 
-.board::before,
-.board::after {
+/*.board::after,*/
+.board::before {
     background-color: rgb(10, 177, 113);
     content: "";
     height: 530px;
@@ -109,9 +109,9 @@ h1 {
     left: -20px;
 }
 
-.board::after {
-    right: -20px;
-}
+/*.board::after {*/
+/*    right: -20px;*/
+/*}*/
 
 .row {
     display: flex;

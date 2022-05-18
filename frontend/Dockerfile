@@ -13,4 +13,4 @@ FROM deps
 COPY --from=deps /app /app
 
 EXPOSE 3000
-CMD [ "yarn", "start" ]
+CMD [ "yarn", "dev" ]

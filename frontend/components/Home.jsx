@@ -1,14 +1,16 @@
+import { useRouter } from "next/router";
 import React, {useCallback, useState} from 'react';
+import { DateTime } from "luxon";
 import { Component1 } from "./Component1";
 import { Component2 } from "./Component2";
-import {getApiPath} from "./env";
-import {useNavigate} from "react-router-dom";
+import { getApiPath } from "./env";
+
 
 function Home() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const redirectToGame = useCallback((gameId, gameUserName) => {
-    navigate(`/game/${gameId}/${gameUserName}`);
-  }, [navigate]);
+    router.push(`/game/${gameId}/${gameUserName}`);
+  }, [router.push]);
   const [unForNewGame, setUnForNewGame] = useState("");
   const [unForExistingGame, setUnForExistingGame] = useState("");
   const [idOfExistingGame, setIdOfExistingGame] = useState("");
@@ -33,6 +35,7 @@ function Home() {
     <div className="App">
       <Component1 hello="jsx" />
       <Component2 hello="tsx" />
+      {DateTime.now().toISODate()}
       <h1 id="main-title">Side Stacker</h1>
       <div className="home-actions">
         <form className="join-game" onSubmit={handleJoinGameSubmit}>
