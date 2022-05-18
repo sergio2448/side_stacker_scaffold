@@ -6,11 +6,11 @@ WORKDIR /app
 
 COPY package.json yarn.lock ./
 
-RUN yarn install
+RUN yarn install --frozen-lockfile
 
 FROM deps
 
 COPY --from=deps /app /app
 
 EXPOSE 3000
-CMD [ "yarn", "dev" ]
+CMD [ "yarn", "dev_and_autoinstall" ]

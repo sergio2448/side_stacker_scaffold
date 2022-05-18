@@ -27,8 +27,9 @@ The project is mounted with Docker and thus, to install it you should just use b
 8. Then to play it you just have to go to `0.0.0.0:3000` in your browser (Requires the container running)
 
 ## Adding frontend packages when running with Docker
+
 After you've installed a frontend package i.e. by adding it to `package.json` or with `yarn add <packagename>`,
-make sure it's updated in docker by running `docker-compose exec --workdir=/app frontend yarn install`
+it should be automatically updated inside your running Docker container. In case it doesn't you can run make sure it's updated in docker by running `docker-compose exec --workdir=/app frontend yarn install` manually
 
 ## Migrations note
 

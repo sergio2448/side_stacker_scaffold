@@ -4,9 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev_and_autoinstall": "next dev & npm run watch",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "watch": "npm-watch",
+    "run_autoinstall": "yarn install --frozen-lockfile"
+  },
+  "watch": {
+    "run_autoinstall": "package.json"
   },
   "dependencies": {
     "luxon": "^2.4.0",
@@ -20,6 +26,7 @@
     "@types/react-dom": "18.0.4",
     "eslint": "8.15.0",
     "eslint-config-next": "12.1.6",
+    "npm-watch": "^0.11.0",
     "typescript": "4.6.4"
   }
 }
