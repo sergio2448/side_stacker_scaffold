@@ -1,3 +1,13 @@
+# Scaffold Checklist
+
+- user changes db schema
+- user wants to access db with a db management tool
+- user adds a frontend lib
+- user adds a backend lib
+- users changes frontend code
+- user changes backend code
+- user changes db
+
 # 🎮 Side Stacker Game 🎮
 <img width="800" alt="image" src="https://user-images.githubusercontent.com/7388681/152719498-4752c388-4ad0-404b-b655-f4e141b7801b.png">
 
@@ -7,12 +17,19 @@ This is my take at the Side Stacker game for Monadical
 The project is mounted with Docker and thus, to install it you should just use basic docker-compose commands.
 
 1. Clone this repository
-3. Build the container: `docker-compose build`
-4. Run it: `docker-compose up -d`
+2. Build the container: `docker-compose build`
+3. Run it: `docker-compose up -d`
+4. Run migrations (The container must be running): `docker-compose exec --workdir=/app backend pw_migrate migrate`
 5. Run the tests (The container must be running): `docker-compose exec backend pytest -sv`
 6. You can run `docker-compose exec app bash` to have a shell inside the container.
 7. Example to run a single test:  `docker-compose exec backend pytest -sv src/tests/test_controller.py::test_player_in_turn`
-8. Then to play it you just have to go to `0.0.0.0:8080` in your browser (Requires the container running)
+8. Then to play it you just have to go to `0.0.0.0:3000` in your browser (Requires the container running)
+
+## Migrations note
+
+Backend uses migrations to set up a database. It is run by docker automatically.
+
+For manual run, `PYTHONPATH=/Users/firfi/work/clients/monadical/side_stacker_scaffold/backend/:$PYTHONPATH pw_migrate migrate`
 
 ## ✔️ Game Features
 * Two players can play a game in different browsers, they just need an `username`, one of them will create a game and share the `game key` with the other one, then they'll join using this and their own `username`

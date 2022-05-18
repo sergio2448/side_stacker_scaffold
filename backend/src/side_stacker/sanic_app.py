@@ -6,6 +6,11 @@ from src.side_stacker.cors import add_cors_headers
 from src.side_stacker.options import setup_options
 from src.side_stacker.views import create_game, game, index
 
+# migrations should be a one-off script but with this app we're fine running it here for user convenience
+# TODO module is not importable, why
+# from peewee_migrate import Router as MigrationRouter
+
+
 app = Sanic(__name__)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
