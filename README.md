@@ -1,5 +1,6 @@
 # Scaffold Checklist
 
+- must accommodate both JS and TS on frontend
 - user changes db schema
 - user wants to access db with a db management tool
 - user adds a frontend lib
