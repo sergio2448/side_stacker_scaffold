@@ -2,4 +2,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 To run lint: `yarn lint`
 
-To run integration tests, while the app is running, run `yarn cypress` in another terminal
+To run Jest tests, run `yarn test`
+
+To run integration tests with Cypress, while the app is running, run `yarn cypress` in another terminal

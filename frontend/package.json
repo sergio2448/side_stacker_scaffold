@@ -10,7 +10,8 @@
     "lint": "next lint",
     "watch": "npm-watch",
     "run_autoinstall": "yarn install --frozen-lockfile",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "test": "jest --watch"
   },
   "watch": {
     "run_autoinstall": "package.json"
@@ -27,6 +28,8 @@
     "styled-components": "^5"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
     "@types/node": "17.0.34",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.4",
@@ -35,6 +38,8 @@
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^28.1.0",
+    "jest-environment-jsdom": "^28.1.0",
     "npm-watch": "^0.11.0",
     "prettier": "^2.6.2",
     "typescript": "4.6.4"
