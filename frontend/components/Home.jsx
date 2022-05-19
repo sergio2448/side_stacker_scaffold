@@ -5,32 +5,47 @@ import { Component1 } from "./Component1";
 import { Component2 } from "./Component2";
 import { getApiPath } from "./env";
 
-function Home() {
+const useRedirectToGame = () => {
   const router = useRouter();
-  const redirectToGame = useCallback(
+  return useCallback(
     (gameId, gameUserName) => {
       router.push(`/game/${gameId}/${gameUserName}`);
     },
     [router]
   );
-  const [unForNewGame, setUnForNewGame] = useState("");
-  const [unForExistingGame, setUnForExistingGame] = useState("");
-  const [idOfExistingGame, setIdOfExistingGame] = useState("");
-  const handleJoinGameSubmit = useCallback(
-    async (e) => {
-      e.preventDefault(); // TODO can add bug here
+};
+
+const useJoinGame = () => {
+  const redirectToGame = useRedirectToGame();
+  return useCallback(
+    async (un) => {
       const apiPath = getApiPath();
       const formData = new FormData();
-      formData.append("username", unForNewGame);
+      formData.append("username", un);
       const r = await fetch(apiPath + "/create-game", {
         method: "POST",
         body: formData,
       });
       if (!r.ok) alert(await r.text());
       const gameId = (await r.json()).game_key;
-      redirectToGame(gameId, unForNewGame);
+      redirectToGame(gameId, un);
     },
-    [unForNewGame, redirectToGame]
+    [redirectToGame]
+  );
+};
+
+function Home() {
+  const redirectToGame = useRedirectToGame();
+  const [unForNewGame, setUnForNewGame] = useState("");
+  const [unForExistingGame, setUnForExistingGame] = useState("");
+  const [idOfExistingGame, setIdOfExistingGame] = useState("");
+  const joinGame = useJoinGame();
+  const handleJoinGameSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      await joinGame(unForNewGame);
+    },
+    [joinGame, unForNewGame]
   );
   const handleRedirectToGame = useCallback(
     async (e) => {
