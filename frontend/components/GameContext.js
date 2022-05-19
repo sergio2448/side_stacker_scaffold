@@ -6,34 +6,30 @@ import {useWebSocket, WebSocketContextProvider} from "./WebSocketContext";
 
 const initEmpty = () => Array(BOARD_ROWS).fill(null).map(() => Array(BOARD_COLUMNS).fill(null));
 
-const gameContext = createContext(null);
-export const GameContextProvider = ({children}) => {
-  const [game, setGame_] = useState(initEmpty);
-  const gameRef = useRef(game); // don't reload join() a lot
-  const setGame = useCallback((game) => {
-    setGame_(game);
-    gameRef.current = game;
-  }, [])
-  const webSocket = useWebSocket();
+// would "playback" a singular move
+const usePlayMove = ({ setGame, gameRef }) => useCallback((playerColor, move) => {
+  const game = gameRef.current; // shadow state
+  const y = parseInt(move[0], 10);
+  const row = game[y];
+  const side = move[1];
+  const rowForSearch = [...row];
+  if (side === SIDE_RIGHT) rowForSearch.reverse();
+  const x_ = rowForSearch.findIndex(p => !p);
+  if (x_ === -1) throw new RangeError(`Row is full`);
+  const x = side === SIDE_RIGHT ? row.length - 1 - x_ : x_; // reverse back
+  // throw new RangeError(`row must be between 0 and ${BOARD_ROWS}.`);
+  // throw new RangeError(`column must be between 0 and ${BOARD_COLUMNS}.`);
+  const game_ = [...game.map(r => [...r])];
+  game_[y][x] = playerColor;
+  setGame(game_);
+}, [setGame]);
 
-  const playMove = useCallback((playerColor, move) => {
-    const game = gameRef.current; // shadow state
-    const y = parseInt(move[0], 10);
-    const row = game[y];
-    const side = move[1];
-    const rowForSearch = [...row];
-    if (side === SIDE_RIGHT) rowForSearch.reverse();
-    const x_ = rowForSearch.findIndex(p => !p);
-    if (x_ === -1) throw new RangeError(`Row is full`);
-    const x = side === SIDE_RIGHT ? row.length - 1 - x_ : x_; // reverse back
-    // throw new RangeError(`row must be between 0 and ${BOARD_ROWS}.`);
-    // throw new RangeError(`column must be between 0 and ${BOARD_COLUMNS}.`);
-    const game_ = [...game.map(r => [...r])];
-    game_[y][x] = playerColor;
-    setGame(game_);
-  }, [setGame]);
-  const receiveMoves = useCallback(() => {
-    const listener = ({ data }) => {
+const useReceiveMoves = ({ setGame, gameRef }) => {
+  const webSocket = useWebSocket();
+  const playMove = usePlayMove({ setGame, gameRef });
+  return useCallback(() => {
+
+    const listener = ({data}) => {
       const event = JSON.parse(data);
       switch (event.type) {
         case "play":
@@ -55,7 +51,11 @@ export const GameContextProvider = ({children}) => {
     webSocket.addEventListener("message", listener);
     return () => webSocket.removeEventListener("message", listener);
   }, [webSocket, playMove]);
-  const move = useCallback((playerName, row, side) => {
+};
+
+const useMove = () => {
+  const webSocket = useWebSocket();
+  return useCallback((playerName, row, side) => {
     const event = {
       type: "play",
       username: playerName,
@@ -63,7 +63,12 @@ export const GameContextProvider = ({children}) => {
     };
     webSocket.send(JSON.stringify(event));
   }, [webSocket]);
-  const join = useCallback((gameId, playerName) => {
+};
+
+const useJoin = ({ setGame, gameRef }) => {
+  const webSocket = useWebSocket();
+  const receiveMoves = useReceiveMoves({ setGame, gameRef });
+  return useCallback((gameId, playerName) => {
     const stopListeningJoin = joinGame(webSocket, gameId, playerName);
     const stopReceivingMoves = receiveMoves();
     return () => {
@@ -72,6 +77,18 @@ export const GameContextProvider = ({children}) => {
       setGame(initEmpty());
     };
   }, [webSocket, receiveMoves, setGame]);
+};
+
+const gameContext = createContext(null);
+export const GameContextProvider = ({children}) => {
+  const [game, setGame_] = useState(initEmpty);
+  const gameRef = useRef(game); // don't reload join() a lot
+  const setGame = useCallback((game) => {
+    setGame_(game);
+    gameRef.current = game;
+  }, [])
+  const move = useMove();
+  const join = useJoin({ setGame, gameRef });
   const api = useMemo(() => ({
     game,
     join,
