@@ -42,7 +42,7 @@ const Board = ({ onMove }) => {
   );
 };
 
-export const ReactStacker = ({ gameId, playerName }) => {
+export const Stacker = ({ gameId, playerName }) => {
   const { join, move } = useGameContext();
   useEffect(() => {
     if (!gameId || !playerName) return;

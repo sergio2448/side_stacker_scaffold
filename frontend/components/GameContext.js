@@ -7,8 +7,11 @@ import {
   useState,
 } from "react";
 import { BOARD_COLUMNS, BOARD_ROWS, SIDE_RIGHT } from "./constants";
-import { joinGame, showMessage } from "./plainJs/sideStacker";
 import { useWebSocket } from "./WebSocketContext";
+
+export function showMessage(message) {
+  window.setTimeout(() => window.alert(message), 50);
+}
 
 const initEmpty = () =>
   Array(BOARD_ROWS)
@@ -79,6 +82,15 @@ const useMove = () => {
     [webSocket]
   );
 };
+
+function joinGame(websocket, gameId, playerName) {
+  const listener = () => {
+    const event = { type: "join", game_key: gameId, username: playerName };
+    websocket.send(JSON.stringify(event));
+  };
+  websocket.addEventListener("open", listener);
+  return () => websocket.removeEventListener("open", listener);
+}
 
 const useJoin = ({ setGame, gameRef }) => {
   const webSocket = useWebSocket();

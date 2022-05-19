@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { ReactStacker } from "./ReactStacker";
+import { Stacker } from "./Stacker";
 import { WebSocketContextProvider } from "./WebSocketContext";
 import { GameContextProvider } from "./GameContext";
-import { PlainJsStacker } from "./PlainJsStacker";
 
 const GamePageWrapper = styled.div`
   display: flex;
@@ -21,9 +20,8 @@ export const GamePage = () => {
   return (
     <GamePageWrapper>
       <WebSocketContextProvider>
-        <PlainJsStacker gameId={gameId} playerName={playerName} />
         <GameContextProvider>
-          <ReactStacker gameId={gameId} playerName={playerName} />
+          <Stacker gameId={gameId} playerName={playerName} />
         </GameContextProvider>
       </WebSocketContextProvider>
     </GamePageWrapper>
