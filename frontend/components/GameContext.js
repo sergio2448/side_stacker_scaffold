@@ -2,15 +2,13 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
-import { getApiPathWS } from "./env";
 import { BOARD_COLUMNS, BOARD_ROWS, SIDE_RIGHT } from "./constants";
 import { joinGame, showMessage } from "./plainJs/sideStacker";
-import { useWebSocket, WebSocketContextProvider } from "./WebSocketContext";
+import { useWebSocket } from "./WebSocketContext";
 
 const initEmpty = () =>
   Array(BOARD_ROWS)

@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useRef } from "react";
 import { getApiPathWS } from "./env";
 
 const webSocketContext = createContext(null);

@@ -1,7 +1,6 @@
-// accepts board html element
 import { createBoard, joinGame, receiveMoves, sendMoves } from "./sideStacker";
-import { getApiPathWS } from "../env";
 
+// accepts board html element
 export const initPlainUi = (board, gameId, playerName, websocket) => {
   const destroyBoard = createBoard(board);
   const stopListeningJoin = joinGame(websocket, gameId, playerName);
