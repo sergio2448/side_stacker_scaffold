@@ -32,7 +32,7 @@ The project is mounted with Docker and thus, to install it you should just use b
 ## Adding frontend packages when running with Docker
 
 After you've installed a frontend package i.e. by adding it to `package.json` or with `yarn add <packagename>`,
-it should be automatically updated inside your running Docker container. In case it doesn't you can run make sure it's updated in docker by running `docker-compose exec --workdir=/app frontend yarn install` manually
+it should be automatically updated inside your running Docker container. In case it doesn't you can run make sure it's updated in docker by running `docker-compose exec --workdir=/app frontend yarn install` manually, or just rebuild the container
 
 ## Migrations note
 
