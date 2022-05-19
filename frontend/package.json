@@ -11,7 +11,8 @@
     "watch": "npm-watch",
     "run_autoinstall": "yarn install --frozen-lockfile",
     "cypress": "cypress open",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "test_docker": "jest --watchAll"
   },
   "watch": {
     "run_autoinstall": "package.json"
