@@ -103,7 +103,6 @@ class GameHandler:
                 self.game_repo.update(board=controller.board, moves=controller.moves, winner=controller.winner)
                 self.game_repo.commit()
         finally:
-            print("REMOVE")
             connections.remove(websocket)
 
     async def handle_messages(self, websocket):
