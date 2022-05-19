@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
-import {initPlainUi} from "./plainJs";
-import {useWebSocket} from "./WebSocketContext";
+import { useEffect, useState } from "react";
+import { initPlainUi } from "./plainJs";
+import { useWebSocket } from "./WebSocketContext";
 
-export const PlainJsStacker = ({gameId, playerName}) => {
+export const PlainJsStacker = ({ gameId, playerName }) => {
   const [boardElement, setBoardElement] = useState();
   const webSocket = useWebSocket();
   useEffect(() => {
@@ -10,9 +10,5 @@ export const PlainJsStacker = ({gameId, playerName}) => {
     if (!webSocket) return;
     return initPlainUi(boardElement, gameId, playerName, webSocket);
   }, [boardElement, webSocket, gameId, playerName]);
-  return (
-    <div className="board" ref={setBoardElement}>
-
-    </div>
-  );
-}
+  return <div className="board" ref={setBoardElement}></div>;
+};

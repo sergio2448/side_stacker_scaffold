@@ -10,8 +10,8 @@ const GamePageWrapper = styled.div`
 `;
 
 export const GamePage = () => {
-  const router = useRouter()
-  const { gameId, playerName } = router.query
+  const router = useRouter();
+  const { gameId, playerName } = router.query;
   if (!gameId) {
     return <div>No game id</div>;
   }
@@ -28,4 +28,4 @@ export const GamePage = () => {
       </WebSocketContextProvider>
     </GamePageWrapper>
   );
-}
+};

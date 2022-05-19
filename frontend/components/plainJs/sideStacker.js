@@ -1,7 +1,7 @@
-import {BOARD_COLUMNS, BOARD_ROWS} from "../constants";
+import { BOARD_COLUMNS, BOARD_ROWS } from "../constants";
 
 function createBoard(board) {
-  const columnsHalf = Math.floor(BOARD_COLUMNS / 2)
+  const columnsHalf = Math.floor(BOARD_COLUMNS / 2);
 
   for (let row = 0; row < BOARD_ROWS; row++) {
     const rowElement = document.createElement("div");
@@ -9,7 +9,7 @@ function createBoard(board) {
     rowElement.dataset.row = row;
     for (let column = 0; column < BOARD_COLUMNS; column++) {
       let cellClassName = "cell empty";
-      cellClassName += column < columnsHalf ? " left" : " right"
+      cellClassName += column < columnsHalf ? " left" : " right";
       const cellElement = document.createElement("div");
       cellElement.className = cellClassName;
       cellElement.dataset.row = row;
@@ -20,12 +20,12 @@ function createBoard(board) {
 
   return () => {
     board.innerHTML = "";
-  }
+  };
 }
 
 function playMove(board, playerColor, move) {
-  const row = parseInt(move[0], 10)
-  const side = move[1]
+  const row = parseInt(move[0], 10);
+  const side = move[1];
 
   const rowElement = board.querySelectorAll(".row")[row];
   if (rowElement === undefined) {
@@ -33,8 +33,8 @@ function playMove(board, playerColor, move) {
   }
 
   const cells = rowElement.querySelectorAll(".cell.empty");
-  const indexToSearch = side === "R" ? cells.length - 1 : 0
-  const cellElement = cells[indexToSearch]
+  const indexToSearch = side === "R" ? cells.length - 1 : 0;
+  const cellElement = cells[indexToSearch];
   if (cellElement === undefined) {
     throw new RangeError(`column must be between 0 and ${BOARD_COLUMNS}.`);
   }
@@ -47,7 +47,7 @@ function playMove(board, playerColor, move) {
 function sendMoves(board, websocket, playerName) {
   const listener = ({ target }) => {
     const row = target.dataset.row;
-    const side = target.className.includes("right") ? "R" : "L"
+    const side = target.className.includes("right") ? "R" : "L";
 
     // Ignore clicks outside a row.
     if (row === undefined) {
@@ -64,7 +64,7 @@ function sendMoves(board, websocket, playerName) {
   board.addEventListener("click", listener);
   return () => {
     board.removeEventListener("click", listener);
-  }
+  };
 }
 
 export function showMessage(message) {
@@ -97,7 +97,7 @@ function receiveMoves(board, websocket) {
 
 function joinGame(websocket, gameId, playerName) {
   const listener = () => {
-    const event = {type: "join", game_key: gameId, username: playerName};
+    const event = { type: "join", game_key: gameId, username: playerName };
     websocket.send(JSON.stringify(event));
   };
   websocket.addEventListener("open", listener);

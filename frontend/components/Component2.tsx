@@ -3,7 +3,5 @@ interface Props {
 }
 
 export const Component2 = (props: Props) => {
-  return (
-    <div>Hello {props.hello}</div>
-  );
-}
+  return <div>Hello {props.hello}</div>;
+};
