@@ -50,13 +50,12 @@ For manual run, `PYTHONPATH=/Users/firfi/work/clients/monadical/side_stacker_sca
 ## 🧑‍💻 Tech Stack
 * Language (Python 3.9)
 * Backend Framework (Sanic and Websockets): I decided to go for a lighter framework than Django Channels to implement websockets because I don't like the unnecessary overhead that Django adds to a small app like this one, this is a fast async framework that implements the websockets library so I just have to start one server.
-* Database (MongoDB/Pymongo): I wanted to use something really simple that don't require to run any migrations or tables creation, so I went for MongoDB that let's you iterate some ideas quickly without the rigid structure of a relational database.
 * Frontend (HTML/CSS/ Plain Javascript)
 * Docker: So you can easily run it on any machine without much effort to install it
 * Testing (Pytest)
 
 ## 💹 Data Model
-I'm basically just using a single collection in Mongo to store the information for a game, it's described as follows:
+I'm basically just using a single collection in Sqlite to store the information for a game, it's described as follows:
 * `key (str)`: This is the identifier of the game, which is also the key shared between players to join a game, it's a 16 length string generated with `secrets.token_urlsafe(12)`
 * `board (list[list])`: This stores the game status, it's a multidimensional list, each position has the `username` of a player or `_` which represents that the cell is empty
 * `players (list)`: List of strings that have the players playing the game, this can't be longer than 2.

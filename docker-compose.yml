@@ -13,10 +13,6 @@ services:
       - PYTHONPATH=/app:$PYTHONPATH
       - PYTHONUNBUFFERED=0
       - ENV
-      - MONGODB_HOST=0.0.0.0
-      - MONGODB_USER=root
-      - MONGODB_PASS=toor
-      - MONGODB_DB=sidestacker
       - SQLITE_PATH=games.db
     volumes:
       - ./backend:/app
@@ -27,8 +23,6 @@ services:
         aliases:
           - side-stacker-network
     command: python3 src/side_stacker/sanic_app.py
-    depends_on:
-      - mongo
   frontend:
     build:
       context: ./frontend
@@ -42,21 +36,6 @@ services:
     ports:
       - 3000:3000
     # command: python3 src/side_stacker/sanic_app.py
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    container_name: mongo_db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: toor
-      MONGO_INITDB_DATABASE: sidestacker
-    volumes:
-      - side-stacker-data:/data/db
-    networks:
-      side_stacker_network:
-        aliases:
-          - side-stacker-mongo
 
 networks:
   side_stacker_network:

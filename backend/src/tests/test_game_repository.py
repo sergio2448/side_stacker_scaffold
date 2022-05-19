@@ -8,10 +8,6 @@ from src.side_stacker.db import Game as DbGame
 from src.side_stacker.repositories import GameRepository
 
 
-def test_create_mongo(game_repository_mongo):
-    do_test_create(game_repository_mongo)
-
-
 def test_create_(game_repository):
     do_test_create(game_repository)
 
@@ -28,11 +24,6 @@ def do_test_create(game_repository):
     assert created_game["board"] == [[EMPTY_CHARACTER] * GAME_COLUMNS for _ in range(GAME_ROWS)]
     assert created_game["players"] == [USERNAME]
     assert created_game["moves"] == []
-
-
-@patch("src.side_stacker.repositories.GameRepositoryMongo._find")
-def test_find_mongo(mock__find, game_repository_mongo):
-    do_test_find(mock__find, game_repository_mongo, "qweljqk12")
 
 
 @patch("src.side_stacker.repositories.GameRepository._find")
@@ -71,10 +62,6 @@ def test_update(game_repository):
     do_test_update(game_repository)
 
 
-def test_update_mongo(game_repository_mongo):
-    do_test_update(game_repository_mongo)
-
-
 def do_test_update(game_repository):
     # Call it without having called find first
     with pytest.raises(AssertionError):
@@ -91,30 +78,6 @@ def do_test_update(game_repository):
     assert game_repository.game == {"key": "12345", "board": [1, 2, 3, 4], "players": ["Milton", "Juan"]}
 
 
-# similar to test_commit
-def test_commit_mongo(clean_db, database_mongo, game_repository_mongo):
-    # Call it without having called find first
-    with pytest.raises(AssertionError):
-        game_repository_mongo.commit()
-
-    # If the game doesn't exist in the database it creates it
-    assert database_mongo.games.count_documents({}) == 0
-    game_repository_mongo.game = {"key": "12345", "board": [], "players": []}
-    game_repository_mongo.commit()
-    games = list(database_mongo.games.find({}))
-    assert len(games) == 1
-    # Testing dict is a subset of the one retrieved in the db because of the mongo "_id" key
-    assert {"key": "12345", "board": [], "players": []}.items() <= games[0].items()
-
-    # If the game exists, update it
-    game_repository_mongo.game = {"key": "12345", "board": [], "players": ["Milton"]}
-    game_repository_mongo.commit()
-    games = list(database_mongo.games.find({}))
-    assert len(games) == 1
-    assert {"key": "12345", "board": [], "players": ["Milton"]}.items() <= games[0].items()
-
-
-# similar to test_commit_mongo
 def test_commit(clean_db, db_games: DbGame, game_repository):
     # Call it without having called find first
     with pytest.raises(AssertionError):
@@ -136,12 +99,10 @@ def test_commit(clean_db, db_games: DbGame, game_repository):
     assert {"key": "12345", "moves": "[]", "board": "[]", "player1": "Milton", "player2": None, "winner": None} == model_to_dict(games[0])
 
 
-def test__find_hitting_db(clean_db, database_mongo, db_games: DbGame, game_repository, game_repository_mongo):
+def test__find_hitting_db(clean_db, db_games: DbGame, game_repository):
     GAME_KEY = "12345"
     expected_game = {"key": GAME_KEY, "board": [], "players": [], "moves": []}
-    assert game_repository_mongo._find(GAME_KEY) is None
     db_games.insert(**GameRepository.serialize_game(expected_game)).execute()
-    database_mongo.games.insert_one(expected_game)
 
     def assert_found_game(g):
         assert g["key"] == GAME_KEY
@@ -150,5 +111,3 @@ def test__find_hitting_db(clean_db, database_mongo, db_games: DbGame, game_repos
 
     found_game = game_repository._find(GAME_KEY)
     assert_found_game(found_game)
-    found_game_mongo = game_repository_mongo._find(GAME_KEY)
-    assert_found_game(found_game_mongo)

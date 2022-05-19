@@ -5,7 +5,6 @@ from typing import Optional, List, Tuple, Dict
 
 from src.side_stacker.constants import EMPTY_CHARACTER, GAME_COLUMNS, GAME_ROWS
 from src.side_stacker.db import Game as DbGames
-from src.side_stacker.mongo import database as mongo_database
 
 
 class AbstractRepository(abc.ABC):
@@ -98,26 +97,3 @@ class GameRepository(AbstractRepository):
             "moves": self._parse_moves(game.moves),
             "winner": game.winner,
         }
-
-
-class GameRepositoryMongo(AbstractRepository):
-
-    def find(self, game_key: str, refresh: bool = False) -> Optional[dict]:
-        if self.game is None or refresh:
-            game = self._find(game_key)
-            if game:
-                # Remove the mongo _id and store in memory
-                del game["_id"]
-                self.game = game
-        return self.game
-
-    def commit(self):
-        self.assert_present()
-
-        mongo_database.games.replace_one({"key": self.game["key"]}, self.game, upsert=True)
-
-    def _find(self, game_key: str) -> Optional[dict]:
-        """
-        The only get-like method that actually touches the database, pattern useful for testing and data integrity
-        """
-        return mongo_database.games.find_one({"key": game_key})
