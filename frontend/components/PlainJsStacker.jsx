@@ -1,12 +1,15 @@
 import {useEffect, useState} from "react";
 import {initPlainUi} from "./plainJs";
+import {useWebSocket} from "./WebSocketContext";
 
 export const PlainJsStacker = ({gameId, playerName}) => {
   const [boardElement, setBoardElement] = useState();
+  const webSocket = useWebSocket();
   useEffect(() => {
     if (!boardElement) return;
-    return initPlainUi(boardElement, gameId, playerName);
-  }, [boardElement]);
+    if (!webSocket) return;
+    return initPlainUi(boardElement, gameId, playerName, webSocket);
+  }, [boardElement, webSocket]);
   return (
     <div className="board" ref={setBoardElement}>
 

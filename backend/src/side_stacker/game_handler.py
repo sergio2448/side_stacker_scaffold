@@ -96,11 +96,14 @@ class GameHandler:
             while True:
                 message = await websocket.recv()
                 event = json.loads(message)
-                movement = event["movement"]
+                movement = event.get("movement")
+                if movement is None:
+                    continue  # another event, might be another join
                 await self.play(websocket, player, movement, controller, connections)
                 self.game_repo.update(board=controller.board, moves=controller.moves, winner=controller.winner)
                 self.game_repo.commit()
         finally:
+            print("REMOVE")
             connections.remove(websocket)
 
     async def handle_messages(self, websocket):

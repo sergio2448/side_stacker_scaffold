@@ -1,5 +1,4 @@
-const BOARD_ROWS = 7;
-const BOARD_COLUMNS = 7;
+import {BOARD_COLUMNS, BOARD_ROWS} from "../constants";
 
 function createBoard(board) {
   const columnsHalf = Math.floor(BOARD_COLUMNS / 2)
@@ -20,7 +19,7 @@ function createBoard(board) {
   }
 
   return () => {
-    board.width += 0; // hack!
+    board.innerHTML = "";
   }
 }
 
@@ -68,7 +67,7 @@ function sendMoves(board, websocket, playerName) {
   }
 }
 
-function showMessage(message) {
+export function showMessage(message) {
   window.setTimeout(() => window.alert(message), 50);
 }
 

@@ -1,3 +1,3 @@
-import { Game } from "../../../../components/Game";
+import { GamePage } from "../../../../components/GamePage";
 
-export default Game;
+export default GamePage;

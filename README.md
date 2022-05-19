@@ -1,3 +1,5 @@
+TODO describe how to add migrations
+
 # Scaffold Checklist
 
 - must accommodate both JS and TS on frontend
