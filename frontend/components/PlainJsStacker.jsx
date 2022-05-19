@@ -9,7 +9,7 @@ export const PlainJsStacker = ({gameId, playerName}) => {
     if (!boardElement) return;
     if (!webSocket) return;
     return initPlainUi(boardElement, gameId, playerName, webSocket);
-  }, [boardElement, webSocket]);
+  }, [boardElement, webSocket, gameId, playerName]);
   return (
     <div className="board" ref={setBoardElement}>
 

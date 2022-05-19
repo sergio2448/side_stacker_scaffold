@@ -13,7 +13,7 @@ const Cell = ({rowIndex, columnIndex, onMove}) => {
   const player = game[rowIndex][columnIndex];
   const handleClick = useCallback(() => {
     onMove(columnIndex, rowIndex);
-  }, [onMove]);
+  }, [onMove, columnIndex, rowIndex]);
   return (
     <div className={cx("cell", {
       "empty": !player
@@ -34,7 +34,7 @@ export const ReactStacker = ({gameId, playerName}) => {
   useEffect(() => {
     if (!gameId || !playerName) return;
     return join(gameId, playerName);
-  }, [gameId, playerName]);
+  }, [gameId, playerName, join]);
   const handleMove = useCallback((x, y) => {
     const side = deriveCellSide(x);
     move(playerName, y, side);

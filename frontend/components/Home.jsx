@@ -10,7 +10,7 @@ function Home() {
   const router = useRouter();
   const redirectToGame = useCallback((gameId, gameUserName) => {
     router.push(`/game/${gameId}/${gameUserName}`);
-  }, [router.push]);
+  }, [router]);
   const [unForNewGame, setUnForNewGame] = useState("");
   const [unForExistingGame, setUnForExistingGame] = useState("");
   const [idOfExistingGame, setIdOfExistingGame] = useState("");
@@ -30,7 +30,7 @@ function Home() {
   const handleRedirectToGame = useCallback(async (e) => {
     e.preventDefault();
     redirectToGame(idOfExistingGame, unForExistingGame);
-  }, [unForExistingGame, idOfExistingGame]);
+  }, [unForExistingGame, idOfExistingGame, redirectToGame]);
   return (
     <div className="App">
       <Component1 hello="jsx" />

@@ -31,7 +31,7 @@ export const GameContextProvider = ({children}) => {
     const game_ = [...game.map(r => [...r])];
     game_[y][x] = playerColor;
     setGame(game_);
-  }, []);
+  }, [setGame]);
   const receiveMoves = useCallback(() => {
     const listener = ({ data }) => {
       const event = JSON.parse(data);
@@ -71,7 +71,7 @@ export const GameContextProvider = ({children}) => {
       stopReceivingMoves();
       setGame(initEmpty());
     };
-  }, [webSocket, receiveMoves]);
+  }, [webSocket, receiveMoves, setGame]);
   const api = useMemo(() => ({
     game,
     join,
