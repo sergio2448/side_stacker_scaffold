@@ -1,15 +1,17 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { BOARD_COLUMNS, BOARD_ROWS, SIDE_RIGHT } from "./constants";
-import { useWebSocket } from "./WebSocketContext";
+import { createContext, ReactNode, RefObject, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { BOARD_COLUMNS, BOARD_ROWS, EVENT_TYPE_ERROR, EVENT_TYPE_PLAY, EVENT_TYPE_WIN, SIDE_RIGHT } from './constants';
+import { useWebSocket } from './WebSocketContext';
+import { ApiEvent, EventType, Game, GameId, PlayerColor, PlayerName, Side, Y } from './types';
 
-export function showMessage(message) {
+interface WithSetGame {
+  setGame: (g: Game) => void;
+}
+
+interface WithGameRef {
+  gameRef: RefObject<Game>;
+}
+
+export function showMessage(message: string) {
   window.setTimeout(() => window.alert(message), 50);
 }
 
@@ -19,10 +21,10 @@ const initEmpty = () =>
     .map(() => Array(BOARD_COLUMNS).fill(null));
 
 // would "playback" a singular move
-const usePlayMove = ({ setGame, gameRef }) =>
+const usePlayMove = ({ setGame, gameRef }: WithSetGame & WithGameRef) =>
   useCallback(
-    (playerColor, move) => {
-      const game = gameRef.current; // shadow state
+    (playerColor: PlayerColor, move: [string, Side]) => {
+      const game = gameRef.current!; // shadow state
       const y = parseInt(move[0], 10);
       const row = game[y];
       const side = move[1];
@@ -40,23 +42,24 @@ const usePlayMove = ({ setGame, gameRef }) =>
     [setGame, gameRef]
   );
 
-const useReceiveMoves = ({ setGame, gameRef }) => {
+const useReceiveMoves = ({ setGame, gameRef }: WithSetGame & WithGameRef) => {
   const webSocket = useWebSocket();
   const playMove = usePlayMove({ setGame, gameRef });
   return useCallback(() => {
-    const listener = ({ data }) => {
-      const event = JSON.parse(data);
+    const listener = ({ data }: { data: string }) => {
+      const event = JSON.parse(data) as ApiEvent;
       switch (event.type) {
-        case "play":
-          // Update the UI with the move.
-          playMove(event.player_color, event.movement);
-          break;
-        case "win":
+        // TODO check exhaustive check works
+        // case EVENT_TYPE_PLAY:
+        //   // Update the UI with the move.
+        //   playMove(event.player_color, event.movement);
+        //   break;
+        case EVENT_TYPE_WIN:
           showMessage(`Player ${event.player} wins!`);
           // No further messages are expected; close the WebSocket connection.
           webSocket.close(1000);
           break;
-        case "error":
+        case EVENT_TYPE_ERROR:
           showMessage(event.message);
           break;
         default:
@@ -71,7 +74,7 @@ const useReceiveMoves = ({ setGame, gameRef }) => {
 const useMove = () => {
   const webSocket = useWebSocket();
   return useCallback(
-    (playerName, row, side) => {
+    (playerName: PlayerName, row: Y, side: Side) => {
       const event = {
         type: "play",
         username: playerName,
@@ -83,7 +86,7 @@ const useMove = () => {
   );
 };
 
-function joinGame(websocket, gameId, playerName) {
+function joinGame(websocket: WebSocket, gameId: GameId, playerName: PlayerName) {
   const listener = () => {
     const event = { type: "join", game_key: gameId, username: playerName };
     websocket.send(JSON.stringify(event));
@@ -92,11 +95,11 @@ function joinGame(websocket, gameId, playerName) {
   return () => websocket.removeEventListener("open", listener);
 }
 
-const useJoin = ({ setGame, gameRef }) => {
+const useJoin = ({ setGame, gameRef }: WithSetGame & WithGameRef) => {
   const webSocket = useWebSocket();
   const receiveMoves = useReceiveMoves({ setGame, gameRef });
   return useCallback(
-    (gameId, playerName) => {
+    (gameId: GameId, playerName: PlayerName) => {
       const stopListeningJoin = joinGame(webSocket, gameId, playerName);
       const stopReceivingMoves = receiveMoves();
       return () => {
@@ -109,11 +112,17 @@ const useJoin = ({ setGame, gameRef }) => {
   );
 };
 
-const gameContext = createContext(null);
-export const GameContextProvider = ({ children }) => {
+export interface GameContext {
+  game: Game;
+  join: (gameId: GameId, playerName: PlayerName) => () => void;
+  move: (playerName: PlayerName, row: Y, side: Side) => void;
+}
+
+const gameContext = createContext<GameContext>(null as any as GameContext/*guaranteed to be there*/);
+export const GameContextProvider = ({ children }: { children: ReactNode }) => {
   const [game, setGame_] = useState(initEmpty);
   const gameRef = useRef(game); // don't reload join() a lot
-  const setGame = useCallback((game) => {
+  const setGame = useCallback((game: Game) => {
     setGame_(game);
     gameRef.current = game;
   }, []);

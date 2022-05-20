@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Stacker } from "./Stacker";
 import { WebSocketContextProvider } from "./WebSocketContext";
 import { GameContextProvider } from "./GameContext";
+import { GameId, PlayerName } from './types';
 
 const GamePageWrapper = styled.div`
   display: flex;
@@ -10,7 +11,7 @@ const GamePageWrapper = styled.div`
 
 export const GamePage = () => {
   const router = useRouter();
-  const { gameId, playerName } = router.query;
+  const { gameId, playerName } = router.query as { gameId: GameId; playerName: PlayerName; };
   if (!gameId) {
     return <div>No game id</div>;
   }

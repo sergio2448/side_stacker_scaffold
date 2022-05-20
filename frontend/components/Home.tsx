@@ -1,14 +1,12 @@
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
-import { DateTime } from "luxon";
-import { Component1 } from "./Component1";
-import { Component2 } from "./Component2";
+import React, { SyntheticEvent, useCallback, useState } from 'react';
 import { getApiPath } from "./env";
+import { GameId, PlayerName } from './types';
 
 const useRedirectToGame = () => {
   const router = useRouter();
   return useCallback(
-    (gameId, gameUserName) => {
+    (gameId: GameId, gameUserName: PlayerName) => {
       router.push(`/game/${gameId}/${gameUserName}`);
     },
     [router]
@@ -18,7 +16,7 @@ const useRedirectToGame = () => {
 const useJoinGame = () => {
   const redirectToGame = useRedirectToGame();
   return useCallback(
-    async (un) => {
+    async (un: PlayerName) => {
       const apiPath = getApiPath();
       const formData = new FormData();
       formData.append("username", un);
@@ -41,24 +39,21 @@ function Home() {
   const [idOfExistingGame, setIdOfExistingGame] = useState("");
   const joinGame = useJoinGame();
   const handleJoinGameSubmit = useCallback(
-    async (e) => {
+    async (e: SyntheticEvent) => {
       e.preventDefault();
-      await joinGame(unForNewGame);
+      await joinGame(unForNewGame as PlayerName);
     },
     [joinGame, unForNewGame]
   );
   const handleRedirectToGame = useCallback(
-    async (e) => {
+    async (e: SyntheticEvent) => {
       e.preventDefault();
-      redirectToGame(idOfExistingGame, unForExistingGame);
+      redirectToGame(idOfExistingGame as GameId, unForExistingGame as PlayerName);
     },
     [unForExistingGame, idOfExistingGame, redirectToGame]
   );
   return (
     <div className="App">
-      <Component1 hello="jsx" />
-      <Component2 hello="tsx" />
-      {DateTime.now().toISODate()}
       <h1 id="main-title">Side Stacker</h1>
       <div className="home-actions">
         <form className="join-game" onSubmit={handleJoinGameSubmit}>
