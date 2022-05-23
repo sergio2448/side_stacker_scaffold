@@ -1,7 +1,4 @@
 # 🎮 Side Stacker Game 🎮
-<img width="800" alt="image" src="https://user-images.githubusercontent.com/7388681/152719498-4752c388-4ad0-404b-b655-f4e141b7801b.png">
-
-This is my take at the Side Stacker game for Monadical
 
 ## 🗒️ How to install and run tests
 The project is mounted with Docker and thus, to install it you should just use basic docker-compose commands.
