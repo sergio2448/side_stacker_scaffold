@@ -9,7 +9,7 @@ The project is mounted with Docker and thus, to install it you should just use b
 4. Run migrations (The container must be running): `docker-compose exec --workdir=/app backend pw_migrate migrate`
 5. Run the backend tests (The container must be running): `docker-compose exec backend pytest -sv`
 6. Run the frontend tests (The container must be running): `docker-compose exec --workdir=/app frontend yarn test_docker`
-7. You can run `docker-compose exec app bash` to have a shell inside the container.
+7. You can run `docker-compose exec <(frontend|backend)> bash` to have a shell inside the container.
 8. Example to run a single test:  `docker-compose exec backend pytest -sv src/tests/test_controller.py::test_player_in_turn`
 9. Then to play it you just have to go to `0.0.0.0:3000` in your browser (Requires the container running)
 
