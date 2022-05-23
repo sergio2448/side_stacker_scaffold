@@ -20,7 +20,7 @@ it should be automatically updated inside your running Docker container. In case
 
 ## Migrations note
 
-Backend uses migrations to set up a database. It is run by docker automatically.
+Backend uses migrations to set up a database. 
 
 For manual run, 
 
