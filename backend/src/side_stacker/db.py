@@ -7,7 +7,7 @@ from peewee import *
 # https://github.com/klen/peewee_migrate/issues/114#issuecomment-568979704
 # maybe sqlalchemy is a better choice for anything after all
 
-db_connection = SqliteDatabase(os.environ["SQLITE_PATH"])
+db_connection = SqliteDatabase(os.environ.get("SQLITE_PATH", "games.db"))
 
 
 class Game(Model):
