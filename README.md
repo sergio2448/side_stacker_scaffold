@@ -55,3 +55,4 @@ or in Docker
 - users changes frontend code
 - user changes backend code
 - user changes db
+- TODO check pre-commit-config.yaml for python
