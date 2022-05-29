@@ -50,10 +50,10 @@ const useReceiveMoves = ({ setGame, gameRef }: WithSetGame & WithGameRef) => {
       const event = JSON.parse(data) as ApiEvent;
       switch (event.type) {
         // TODO check exhaustive check works
-        // case EVENT_TYPE_PLAY:
-        //   // Update the UI with the move.
-        //   playMove(event.player_color, event.movement);
-        //   break;
+        case EVENT_TYPE_PLAY:
+          // Update the UI with the move.
+          playMove(event.player_color, event.movement);
+          break;
         case EVENT_TYPE_WIN:
           showMessage(`Player ${event.player} wins!`);
           // No further messages are expected; close the WebSocket connection.
