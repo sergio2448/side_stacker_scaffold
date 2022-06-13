@@ -1,5 +1,6 @@
 import abc
 import json
+import pdb
 import secrets
 from typing import Optional, List, Tuple, Dict
 
@@ -16,10 +17,14 @@ class AbstractRepository(abc.ABC):
 
     def create(self, player_username: str):
         assert player_username
+        #print(player_username)
         game_key = secrets.token_urlsafe(12)
+        #print(game_key)
         game_board = [[EMPTY_CHARACTER] * GAME_COLUMNS for _ in range(GAME_ROWS)]
+        #print(game_board)
 
         self.game = {"key": game_key, "board": game_board, "players": [player_username], "moves": [], "winner": None}
+        #print(self.game)
 
         return game_key
 
@@ -97,3 +102,21 @@ class GameRepository(AbstractRepository):
             "moves": self._parse_moves(game.moves),
             "winner": game.winner,
         }
+
+
+# Building
+class GameService:
+    def all(self):
+        arr_games = []
+        for user in DbGames.select():
+            arr_games.append(
+                {
+                    "game_id": user.key,
+                    "player1": user.player1,
+                    "player2": user.player2
+                }
+            )
+            print(user.key)
+            print(user.player1)
+            print(user.player2)
+        return arr_games

@@ -4,7 +4,7 @@ from sanic import Sanic
 
 from src.side_stacker.cors import add_cors_headers
 from src.side_stacker.options import setup_options
-from src.side_stacker.views import create_game, game, index
+from src.side_stacker.views import create_game, game, index, test
 
 # migrations should be a one-off script but with this app we're fine running it here for user convenience
 # TODO module is not importable, why
@@ -18,6 +18,7 @@ app.static("/static", os.path.join(BASE_DIR, "static"))
 
 app.add_route(index, "/")
 app.add_route(create_game, "/create-game", methods=["POST"])
+app.add_route(test, "/test")
 app.add_websocket_route(game, "/game")
 
 # Add OPTIONS handlers to any route that is missing it
