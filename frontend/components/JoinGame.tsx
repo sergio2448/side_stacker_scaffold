@@ -10,7 +10,6 @@ const JoinGame = ({game_id}) => {
   const [unForExistingGame, setUnForExistingGame] = useState("");
   const [idOfExistingGame, setIdOfExistingGame] = useState(game_id);
   
-  console.log(idOfExistingGame)
   const handleRedirectToGame = useCallback(
     async (e: SyntheticEvent) => {
       e.preventDefault();

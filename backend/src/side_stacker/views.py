@@ -13,16 +13,14 @@ async def index(request):
 async def create_game(request):
     username = request.form["username"][0]  # required
     game_repository = GameRepository()
-    #print(game_repository)
     game_key = game_repository.create(username)
-    #print(game_key)
     game_repository.commit()
     return json({"game_key": game_key})
 
 async def test(request):
     games = GameService()
-    games_key = games.all()
-    return json({"games_key": games_key})
+    all_games = games.all()
+    return json({"all_games": all_games})
 
 async def game(request, websocket):
     game_handler = GameHandler()

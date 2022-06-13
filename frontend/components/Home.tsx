@@ -5,8 +5,7 @@ import JoinGame from "./JoinGame";
 import Modal from './Modal';
 
 function Home() {
-  var initialValue = false
-  const [isOpen, setIsOpen] = useState(initialValue);
+  const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false)
   return (
